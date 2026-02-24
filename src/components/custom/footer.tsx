@@ -1,5 +1,5 @@
 import logo from '/wu-logo.png'
-import { Box, Container, Flex, Spacer, HStack, Link, Text } from '@chakra-ui/react';
+import { Box, Container, Flex, Text } from '@chakra-ui/react';
 
 function Footer() {
   return (
@@ -16,18 +16,6 @@ function Footer() {
             style={{ height: '2.5rem', width: 'auto' }}
           />
           <Text fontWeight="semibold">Weather Update</Text>
-          <Spacer display={{ base: 'none', md: 'block' }} />
-          <HStack gap={4} flexWrap="wrap">
-            <Link href="#" color="gray.300">
-              Privacy
-            </Link>
-            <Link href="#" color="gray.300">
-              Terms
-            </Link>
-            <Link href="#" color="gray.300">
-              Contact
-            </Link>
-          </HStack>
         </Flex>
       </Container>
     </Box>

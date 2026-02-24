@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import process from 'process';
+import { requireSession } from '../auth/auth';
 
 const WEATHERBIT_BASE = "https://api.weatherbit.io/v2.0";
 
@@ -11,6 +12,9 @@ function pickQuery(req: VercelRequest) {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const session = requireSession(req);
+  if (!session) return res.status(401).json({ error: "Unauthorized" });
+
   const key = process.env.WEATHERBIT_API_KEY;
   if (!key) return res.status(500).json({ error: "Server missing WEATHERBIT_API_KEY" });
 

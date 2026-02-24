@@ -13,11 +13,22 @@ import {
   MenuRoot,
   MenuTrigger,
   Spacer,
-  Text,
 } from '@chakra-ui/react';
 import { LuMenu } from 'react-icons/lu';
+import { useSession } from '@/hooks/useSession';
+import { loginRequest, logoutRequest } from '@/services/auth';
 
 function Navbar() {
+  const { data, isLoading } = useSession();
+
+  const loginHandler = () => {
+    loginRequest(import.meta.env.VITE_AUTH_TOKEN!);
+  }
+
+  const logoutHandler = () => {
+    logoutRequest();
+  }
+
   return (
     <Box
         as="nav"
@@ -37,49 +48,83 @@ function Navbar() {
               alt="Weather Update logo"
               style={{ height: '2.5rem', width: 'auto' }}
             />
-            <Text fontSize="lg" fontWeight="bold" color="blue.700">
+            <Link href='/' fontSize="lg" fontWeight="bold" color="blue.700">
               Weather Update
-            </Text>
+            </Link>
           </HStack>
 
           <Spacer />
 
-          <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
-            <Link href="#" color="gray.700" fontWeight="medium">
-              Home
-            </Link>
-            <Link href="/forecast" color="gray.700" fontWeight="medium">
-              Forecast
-            </Link>
-            <Link href="#" color="gray.700" fontWeight="medium">
-              Alerts
-            </Link>
-          </HStack>
+          {data?.authenticated ? (
+            <>
+              <HStack gap={6} display={{ base: 'none', md: 'flex' }}>
+                <Link href="/" color="gray.700" fontWeight="medium">
+                  Home
+                </Link>
+                <Link href="/forecast" color="gray.700" fontWeight="medium">
+                  Forecast
+                </Link>
+                <Link href="/alerts" color="gray.700" fontWeight="medium">
+                  Alerts
+                </Link>
+              </HStack>
 
-          <Box display={{ base: 'block', md: 'none' }}>
-            <MenuRoot positioning={{ placement: 'bottom-end' }}>
-              <MenuTrigger asChild>
-                <IconButton
-                  aria-label="Open navigation menu"
-                  variant="outline"
-                  size="sm"
-                >
-                  <LuMenu />
-                </IconButton>
-              </MenuTrigger>
-              <MenuPositioner>
-                <MenuContent minW="10rem">
-                  <MenuItem value="home">Home</MenuItem>
-                  <MenuItem value="forecast">Forecast</MenuItem>
-                  <MenuItem value="alerts">Alerts</MenuItem>
-                </MenuContent>
-              </MenuPositioner>
-            </MenuRoot>
-          </Box>
+              <Box display={{ base: 'block', md: 'none' }}>
+                <MenuRoot positioning={{ placement: 'bottom-end' }}>
+                  <MenuTrigger asChild>
+                    <IconButton
+                      aria-label="Open navigation menu"
+                      variant="outline"
+                      size="sm"
+                    >
+                      <LuMenu />
+                    </IconButton>
+                  </MenuTrigger>
+                  <MenuPositioner>
+                    <MenuContent minW="10rem">
+                      <MenuItem value="home">
+                        <Link href="/" color="gray.700" fontWeight="medium">
+                          Home
+                        </Link>
+                      </MenuItem>
+                      <MenuItem value="forecast">
+                        <Link href="/forecast" color="gray.700" fontWeight="medium">
+                          Forecast
+                        </Link>
+                      </MenuItem>
+                      <MenuItem value="alerts">
+                        <Link href="/alerts" color="gray.700" fontWeight="medium">
+                          Alerts
+                        </Link>
+                      </MenuItem>
+                    </MenuContent>
+                  </MenuPositioner>
+                </MenuRoot>
+              </Box>
+            </>
+          ) : null}
 
-          <Button colorPalette="blue" size="sm" display={{ base: 'none', sm: 'inline-flex' }}>
-            Get Updates
-          </Button>
+          {!data?.authenticated ? (
+            <Button
+              colorPalette="blue"
+              size="sm"
+              display={{ base: 'none', sm: 'inline-flex' }}
+              onClick={loginHandler}
+              loading={isLoading}
+            >
+              Login
+            </Button>
+          ) : (
+            <Button
+              colorPalette="blue"
+              size="sm"
+              display={{ base: 'none', sm: 'inline-flex' }}
+              onClick={logoutHandler}
+              loading={isLoading}
+            >
+              Logout
+            </Button>
+          )}
         </Flex>
       </Container>
     </Box>

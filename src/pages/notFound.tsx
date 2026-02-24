@@ -1,22 +1,10 @@
 import Footer from '@/components/custom/footer';
 import Navbar from '@/components/custom/navbar';
 import { Flex, Container, Box, Text } from '@chakra-ui/react';
-import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudSun } from '@fortawesome/free-solid-svg-icons';
-import { getWeatherAlerts } from '@/lib/http';
 
-function Alerts() {
-  useEffect(() => {
-    getWeatherAlerts('Pretoria', 'ZA')
-      .then((data: any) => {
-        console.log('Weather alerts data:', data);
-      })
-      .catch((error: any) => {
-        console.error('Error fetching weather alerts data:', error);
-      });
-  }, []);
-
+function NotFound() {
   return (
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
@@ -38,7 +26,7 @@ function Alerts() {
               Welcome
             </Text>
             <Text mt={2} color="gray.600">
-              Your weather alerts are ready.
+              Your page is not found.
               <FontAwesomeIcon icon={faCloudSun} style={{ marginLeft: '0.5rem' }} />
             </Text>
           </Box>
@@ -50,4 +38,4 @@ function Alerts() {
   );
 }
 
-export default Alerts;
+export default NotFound;
