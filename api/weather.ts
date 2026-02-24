@@ -4,38 +4,30 @@ import process from 'process';
 const WEATHERBIT_BASE = "https://api.weatherbit.io/v2.0";
 
 function pickQuery(req: VercelRequest) {
-  const lat = typeof req.query.lat === "string" ? req.query.lat : undefined;
-  const lon = typeof req.query.lon === "string" ? req.query.lon : undefined;
-  const city = typeof req.query.city === "string" ? req.query.city : undefined;
-  const country = typeof req.query.country === "string" ? req.query.country : undefined;
+  const city = typeof req.query.city === "string" ? req.body.city : undefined;
+  const country = typeof req.query.country === "string" ? req.body.country : undefined;
 
-  return { lat, lon, city, country };
+  return { city, country };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const key = process.env.WEATHERBIT_API_KEY;
   if (!key) return res.status(500).json({ error: "Server missing WEATHERBIT_API_KEY" });
 
-  const { lat, lon, city, country } = pickQuery(req);
+  const { city, country } = pickQuery(req);
 
-  // Require either lat+lon or city
-  const hasCoords = !!lat && !!lon;
   const hasCity = !!city;
+  const hasCountry = !!country;
 
-  if (!hasCoords && !hasCity) {
+  if (!hasCity && hasCountry) {
     return res.status(400).json({ error: "Provide lat+lon or city" });
   }
 
   const url = new URL(`${WEATHERBIT_BASE}/current`);
   url.searchParams.set("key", key);
 
-  if (hasCoords) {
-    url.searchParams.set("lat", lat!);
-    url.searchParams.set("lon", lon!);
-  } else {
-    url.searchParams.set("city", city!);
-    if (country) url.searchParams.set("country", country);
-  }
+  url.searchParams.set("city", city!);
+  url.searchParams.set("country", country);
 
   try {
     const upstream = await fetch(url.toString(), {

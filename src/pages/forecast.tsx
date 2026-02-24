@@ -2,11 +2,20 @@ import Footer from '@/components/custom/footer';
 import Navbar from '@/components/custom/navbar';
 import { Flex, Container, Box, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCloudSun } from '@fortawesome/free-solid-svg-icons';
 
 function Forecast() {
   useEffect(() => {
     // Fetch forecast data from the API when the component mounts
-    fetch('/api/weather')
+    fetch('/api/weather', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        city: 'Pretoria',
+        country: 'South Africa',
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log('Forecast data:', data);
@@ -39,6 +48,7 @@ function Forecast() {
             </Text>
             <Text mt={2} color="gray.600">
               Your weather forecast is ready.
+              <FontAwesomeIcon icon={faCloudSun} style={{ marginLeft: '0.5rem' }} />
             </Text>
           </Box>
         </Flex>
