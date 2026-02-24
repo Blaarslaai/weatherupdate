@@ -48,7 +48,7 @@ function Navbar() {
             <Link href="#" color="gray.700" fontWeight="medium">
               Home
             </Link>
-            <Link href="#" color="gray.700" fontWeight="medium">
+            <Link href="/forecast" color="gray.700" fontWeight="medium">
               Forecast
             </Link>
             <Link href="#" color="gray.700" fontWeight="medium">
