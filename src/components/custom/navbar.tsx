@@ -14,19 +14,37 @@ import {
   MenuTrigger,
   Spacer,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { LuMenu } from 'react-icons/lu';
 import { useSession } from '@/hooks/useSession';
 import { loginRequest, logoutRequest } from '@/services/auth';
 
 function Navbar() {
-  const { data, isLoading } = useSession();
+  const { data, isLoading, refetch } = useSession();
+  const queryClient = useQueryClient();
+  const [isAuthSubmitting, setIsAuthSubmitting] = useState(false);
 
-  const loginHandler = () => {
-    loginRequest(import.meta.env.VITE_AUTH_TOKEN!);
+  const loginHandler = async () => {
+    try {
+      setIsAuthSubmitting(true);
+      await loginRequest(import.meta.env.VITE_AUTH_TOKEN!);
+      await queryClient.invalidateQueries({ queryKey: ['session'] });
+      await refetch();
+    } finally {
+      setIsAuthSubmitting(false);
+    }
   }
 
-  const logoutHandler = () => {
-    logoutRequest();
+  const logoutHandler = async () => {
+    try {
+      setIsAuthSubmitting(true);
+      await logoutRequest();
+      await queryClient.invalidateQueries({ queryKey: ['session'] });
+      await refetch();
+    } finally {
+      setIsAuthSubmitting(false);
+    }
   }
 
   return (
@@ -110,7 +128,7 @@ function Navbar() {
               size="sm"
               display={{ base: 'none', sm: 'inline-flex' }}
               onClick={loginHandler}
-              loading={isLoading}
+              loading={isLoading || isAuthSubmitting}
             >
               Login
             </Button>
@@ -120,7 +138,7 @@ function Navbar() {
               size="sm"
               display={{ base: 'none', sm: 'inline-flex' }}
               onClick={logoutHandler}
-              loading={isLoading}
+              loading={isLoading || isAuthSubmitting}
             >
               Logout
             </Button>

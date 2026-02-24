@@ -1,4 +1,7 @@
+import Footer from '@/components/custom/footer';
+import Navbar from '@/components/custom/navbar';
 import { useSession } from '@/hooks/useSession';
+import { Container, Flex, SkeletonText } from '@chakra-ui/react';
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export function ProtectedRoute() {
@@ -8,10 +11,17 @@ export function ProtectedRoute() {
   // While we check session, show a simple gate screen (or skeleton)
   if (isLoading) {
     return (
-      <div style={{ padding: 24 }}>
-        <h3>Checking session…</h3>
-        <p>Please wait.</p>
-      </div>
+      <Flex direction="column" minH="100vh" bg="gray.50">
+        <Navbar />
+
+        <Container as="main" maxW="6xl" py={12} flex="1">
+          <Flex direction="column" gap={6}>
+          <SkeletonText noOfLines={3} gap="4" />
+          </Flex>
+        </Container>
+
+        <Footer />
+      </Flex>
     );
   }
 
