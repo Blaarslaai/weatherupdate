@@ -2,10 +2,11 @@ import { currentWeatherResponseSchema } from '@/schemas/currentWeatherSchemas';
 import { weatherAlertsResponseSchema } from '../schemas/weatherAlertSchemas';
 
 export function getCurrentWeather(city: string, country: string) {
-  return fetch('/api/currentWeather', {
+  return fetch('/api/weather/currentWeather', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ city, country }),
+    credentials: "include",
   }).then((response) => {
     if (!response.ok) {
       throw new Error(`API error: ${response.statusText}`);
@@ -15,10 +16,11 @@ export function getCurrentWeather(city: string, country: string) {
 }
 
 export function getWeatherAlerts(city: string, country: string) {
-  return fetch('/api/weatherAlerts', {
+  return fetch('/api/weather/weatherAlerts', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ city, country }),
+    credentials: "include",
   }).then((response) => {
     if (!response.ok) {
       throw new Error(`API error: ${response.statusText}`);
