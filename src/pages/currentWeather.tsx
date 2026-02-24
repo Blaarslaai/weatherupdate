@@ -5,17 +5,8 @@ import {
   Box,
   Button,
   Container,
-  DialogBackdrop,
-  DialogBody,
-  DialogCloseTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogPositioner,
-  DialogRoot,
-  DialogTitle,
   Flex,
   HStack,
-  Input,
   SimpleGrid,
   Spinner,
   Text,
@@ -30,6 +21,7 @@ import {
 import type { CurrentWeatherResponse } from '@/schemas/currentWeatherSchemas';
 import type { DailyForecastDay, DailyForecastResponse } from '@/schemas/dailyForecastSchemas';
 import type { DailyHistoryDay, DailyHistoryResponse } from '@/schemas/dailyHistorySchemas';
+import { useAppState } from '@/state/app-state';
 
 type MetricCardProps = {
   label: string;
@@ -79,24 +71,31 @@ function formatTimeFromUnix(timestamp?: number) {
   }).format(new Date(timestamp * 1000));
 }
 
+function cacheKey(city: string, country: string) {
+  return `weatherupdate.currentWeatherPage.${country.toUpperCase()}.${city.toLowerCase()}`;
+}
+
+type CurrentWeatherPageCache = {
+  currentWeather: CurrentWeatherResponse | null;
+  dailyForecast: DailyForecastResponse | null;
+  dailyHistory: DailyHistoryResponse | null;
+};
+
+type SnapshotSelection =
+  | { kind: 'current' }
+  | { kind: 'forecast'; day: DailyForecastDay }
+  | { kind: 'history'; day: DailyHistoryDay };
+
 function CurrentWeather() {
-  const defaultLocation = { city: 'Pretoria', country: 'ZA' };
+  const { location } = useAppState();
   const [currentWeather, setCurrentWeather] = useState<CurrentWeatherResponse | null>(null);
   const [dailyForecast, setDailyForecast] = useState<DailyForecastResponse | null>(null);
   const [dailyHistory, setDailyHistory] = useState<DailyHistoryResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [forecastError, setForecastError] = useState<string | null>(null);
   const [historyError, setHistoryError] = useState<string | null>(null);
-  const [locationError, setLocationError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isSearchingLocation, setIsSearchingLocation] = useState(false);
-  const [searchCountryCode, setSearchCountryCode] = useState(defaultLocation.country);
-  const [searchCityName, setSearchCityName] = useState(defaultLocation.city);
-  const [activeLocation, setActiveLocation] = useState(defaultLocation);
-  const [selectedForecastDay, setSelectedForecastDay] = useState<DailyForecastDay | null>(null);
-  const [isForecastDialogOpen, setIsForecastDialogOpen] = useState(false);
-  const [selectedHistoryDay, setSelectedHistoryDay] = useState<DailyHistoryDay | null>(null);
-  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [selectedSnapshot, setSelectedSnapshot] = useState<SnapshotSelection>({ kind: 'current' });
 
   const loadWeatherData = (city: string, country: string, forceRefresh = false) => {
     setIsRefreshing(forceRefresh);
@@ -110,7 +109,12 @@ function CurrentWeather() {
       getDailyHistory(city, country, { forceRefresh }),
     ])
       .then(([currentResult, forecastResult, historyResult]) => {
+        let nextCurrent: CurrentWeatherResponse | null = null;
+        let nextForecast: DailyForecastResponse | null = null;
+        let nextHistory: DailyHistoryResponse | null = null;
+
         if (currentResult.status === 'fulfilled') {
+          nextCurrent = currentResult.value;
           setCurrentWeather(currentResult.value);
           setError(null);
         } else {
@@ -123,6 +127,7 @@ function CurrentWeather() {
         }
 
         if (forecastResult.status === 'fulfilled') {
+          nextForecast = forecastResult.value;
           setDailyForecast(forecastResult.value);
           setForecastError(null);
         } else {
@@ -135,6 +140,7 @@ function CurrentWeather() {
         }
 
         if (historyResult.status === 'fulfilled') {
+          nextHistory = historyResult.value;
           setDailyHistory(historyResult.value);
           setHistoryError(null);
         } else {
@@ -145,6 +151,19 @@ function CurrentWeather() {
               : 'Failed to load daily history.',
           );
         }
+
+        if (nextCurrent || nextForecast || nextHistory) {
+          const payload: CurrentWeatherPageCache = {
+            currentWeather: nextCurrent ?? currentWeather,
+            dailyForecast: nextForecast ?? dailyForecast,
+            dailyHistory: nextHistory ?? dailyHistory,
+          };
+          try {
+            window.localStorage.setItem(cacheKey(city, country), JSON.stringify(payload));
+          } catch {
+            // Ignore cache write failures.
+          }
+        }
       })
       .finally(() => {
         setIsRefreshing(false);
@@ -152,30 +171,39 @@ function CurrentWeather() {
   };
 
   useEffect(() => {
-    void loadWeatherData(defaultLocation.city, defaultLocation.country, false);
-  }, []);
+    const city = location.city.trim();
+    const country = location.country.trim().toUpperCase();
 
-  const handleSearchLocation = () => {
-    const city = searchCityName.trim();
-    const country = searchCountryCode.trim().toUpperCase();
+    if (!city || !country) return;
 
-    if (!city || !country) {
-      setLocationError('Enter a city and 2-letter country code before searching.');
-      return;
+    try {
+      const raw = window.localStorage.getItem(cacheKey(city, country));
+      if (raw) {
+        const cached = JSON.parse(raw) as CurrentWeatherPageCache;
+        if (cached.currentWeather) setCurrentWeather(cached.currentWeather);
+        if (cached.dailyForecast) setDailyForecast(cached.dailyForecast);
+        if (cached.dailyHistory) setDailyHistory(cached.dailyHistory);
+        setError(null);
+        setForecastError(null);
+        setHistoryError(null);
+        return;
+      }
+    } catch {
+      // Ignore cache read failures.
     }
 
-    setLocationError(null);
-    setIsSearchingLocation(true);
-    setActiveLocation({ city, country });
-
-    void loadWeatherData(city, country, false).finally(() => {
-      setIsSearchingLocation(false);
-    });
-  };
+    void loadWeatherData(city, country, false);
+  }, [location.city, location.country]);
 
   const weather = currentWeather?.data?.[0];
   const forecastDays = dailyForecast?.data?.slice(0, 3) ?? [];
   const historyDays = (dailyHistory?.data ?? []).slice(0, 3);
+  const selectedForecastDay = selectedSnapshot.kind === 'forecast' ? selectedSnapshot.day : null;
+  const selectedHistoryDay = selectedSnapshot.kind === 'history' ? selectedSnapshot.day : null;
+
+  useEffect(() => {
+    setSelectedSnapshot({ kind: 'current' });
+  }, [location.city, location.country]);
 
   const metrics = weather
     ? [
@@ -374,6 +402,38 @@ function CurrentWeather() {
       ]
     : [];
 
+  const activeHeader = (() => {
+    if (selectedSnapshot.kind === 'forecast' && selectedForecastDay) {
+      return {
+        title: `Forecast Snapshot • ${formatDayLabel(selectedForecastDay.valid_date)}`,
+        subtitle: `${dailyForecast?.city_name ?? location.city}${dailyForecast?.state_code ? `, ${dailyForecast.state_code}` : ''} • ${dailyForecast?.country_code ?? location.country}`,
+        meta: `${selectedForecastDay.valid_date} • ${selectedForecastDay.weather.description}`,
+        badge: selectedForecastDay.weather.description,
+        metrics: selectedDayMetrics,
+      };
+    }
+
+    if (selectedSnapshot.kind === 'history' && selectedHistoryDay) {
+      return {
+        title: `History Snapshot • ${formatDayLabel(selectedHistoryDay.datetime)}`,
+        subtitle: `${dailyHistory?.city_name ?? location.city}${dailyHistory?.state_code ? `, ${dailyHistory.state_code}` : ''} • ${dailyHistory?.country_code ?? location.country}`,
+        meta: `${selectedHistoryDay.datetime} • Revision ${selectedHistoryDay.revision_status ?? 'N/A'}`,
+        badge: 'Historical',
+        metrics: selectedHistoryMetrics,
+      };
+    }
+
+    return {
+      title: 'Current Weather',
+      subtitle: weather
+        ? `${weather.city_name}${weather.state_code ? `, ${weather.state_code}` : ''} • ${weather.country_code}`
+        : 'Loading current conditions...',
+      meta: weather ? `Observed at ${weather.ob_time} (${weather.timezone})` : undefined,
+      badge: weather?.weather.description,
+      metrics,
+    };
+  })();
+
   return (
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
@@ -382,75 +442,22 @@ function CurrentWeather() {
         <Flex direction="column" gap={6}>
           <Box
             bg="white"
-            p={{ base: 5, md: 6 }}
+            p={{ base: 4, md: 5 }}
             rounded="xl"
-            boxShadow="md"
+            boxShadow="sm"
             border="1px solid"
             borderColor="gray.200"
           >
-            <Text fontSize="xl" fontWeight="bold" color="gray.800">
-              Location Search
-            </Text>
-            <Text fontSize="sm" color="gray.600" mt={1}>
-              Enter a city and a 2-letter country code to update all weather panels.
-            </Text>
-
-            <SimpleGrid columns={{ base: 1, md: 3 }} gap={4} mt={4}>
-              <Box>
-                <Text fontSize="sm" color="gray.600" mb={2}>
-                  City
-                </Text>
-                <Input
-                  value={searchCityName}
-                  onChange={(event) => setSearchCityName(event.target.value)}
-                  placeholder="e.g. Pretoria"
-                />
-              </Box>
-
-              <Box>
-                <Text fontSize="sm" color="gray.600" mb={2}>
-                  Country Code
-                </Text>
-                <Input
-                  value={searchCountryCode}
-                  onChange={(event) => setSearchCountryCode(event.target.value.toUpperCase())}
-                  placeholder="e.g. ZA"
-                  maxLength={2}
-                />
-              </Box>
-
-              <Flex align="end">
-                <Button
-                  colorPalette="blue"
-                  w="full"
-                  onClick={handleSearchLocation}
-                  disabled={
-                    isSearchingLocation ||
-                    !searchCityName.trim() ||
-                    !searchCountryCode.trim()
-                  }
-                >
-                  {isSearchingLocation ? (
-                    <>
-                      <Spinner size="xs" mr={2} />
-                      Searching...
-                    </>
-                  ) : (
-                    'Search'
-                  )}
-                </Button>
-              </Flex>
-            </SimpleGrid>
-
-            <HStack mt={4} gap={3} flexWrap="wrap">
-              <Badge colorPalette="green" variant="subtle" px={3} py={1} rounded="full">
-                Active: {activeLocation.city}, {activeLocation.country}
+            <HStack gap={3} flexWrap="wrap">
+              <Badge colorPalette="blue" variant="subtle" px={3} py={1} rounded="full">
+                Homepage Selection
               </Badge>
-              {locationError ? (
-                <Text fontSize="sm" color="red.600">
-                  {locationError}
-                </Text>
-              ) : null}
+              <Badge colorPalette="green" variant="subtle" px={3} py={1} rounded="full">
+                Active: {location.city}, {location.country}
+              </Badge>
+              <Text fontSize="sm" color="gray.500">
+                Update city/country on the home page.
+              </Text>
             </HStack>
           </Box>
 
@@ -465,32 +472,39 @@ function CurrentWeather() {
             <HStack justify="space-between" align="start" flexWrap="wrap" gap={4}>
               <Box>
                 <Text fontSize={{ base: '2xl', md: '3xl' }} fontWeight="bold" color="gray.800">
-                  Current Weather
+                  {activeHeader.title}
                 </Text>
                 <Text mt={2} color="gray.600">
-                  {weather
-                    ? `${weather.city_name}${weather.state_code ? `, ${weather.state_code}` : ''} • ${weather.country_code}`
-                    : 'Loading current conditions...'}
+                  {activeHeader.subtitle}
                 </Text>
-                {weather ? (
+                {activeHeader.meta ? (
                   <Text mt={1} color="gray.500" fontSize="sm">
-                    Observed at {weather.ob_time} ({weather.timezone})
+                    {activeHeader.meta}
                   </Text>
                 ) : null}
               </Box>
 
               <HStack gap={3} align="center">
-                {weather ? (
+                {activeHeader.badge ? (
                   <Badge colorPalette="blue" variant="subtle" px={3} py={1} rounded="full">
-                    {weather.weather.description}
+                    {activeHeader.badge}
                   </Badge>
+                ) : null}
+                {selectedSnapshot.kind !== 'current' ? (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedSnapshot({ kind: 'current' })}
+                  >
+                    Show Current
+                  </Button>
                 ) : null}
                 <Button
                   size="sm"
                   variant="outline"
                   colorPalette="blue"
                   onClick={() =>
-                    void loadWeatherData(activeLocation.city, activeLocation.country, true)
+                    void loadWeatherData(location.city, location.country, true)
                   }
                   disabled={isRefreshing}
                 >
@@ -539,9 +553,9 @@ function CurrentWeather() {
             </Box>
           ) : null}
 
-          {weather ? (
+          {activeHeader.metrics.length > 0 ? (
             <SimpleGrid columns={{ base: 1, sm: 2, lg: 3 }} gap={4}>
-              {metrics.map((metric) => (
+              {activeHeader.metrics.map((metric) => (
                 <MetricCard
                   key={metric.label}
                   label={metric.label}
@@ -612,8 +626,7 @@ function CurrentWeather() {
                     _hover={{ bg: 'blue.50', borderColor: 'blue.200' }}
                     _active={{ bg: 'blue.100' }}
                     onClick={() => {
-                      setSelectedForecastDay(day);
-                      setIsForecastDialogOpen(true);
+                      setSelectedSnapshot({ kind: 'forecast', day });
                     }}
                   >
                     <VStack align="stretch" w="full" p={4} gap={2}>
@@ -704,8 +717,7 @@ function CurrentWeather() {
                     _hover={{ bg: 'blue.50', borderColor: 'blue.200' }}
                     _active={{ bg: 'blue.100' }}
                     onClick={() => {
-                      setSelectedHistoryDay(day);
-                      setIsHistoryDialogOpen(true);
+                      setSelectedSnapshot({ kind: 'history', day });
                     }}
                   >
                     <VStack align="stretch" w="full" p={4} gap={2}>
@@ -737,96 +749,6 @@ function CurrentWeather() {
           </Box>
         </Flex>
       </Container>
-
-      <DialogRoot
-        open={isForecastDialogOpen}
-        onOpenChange={(details) => {
-          setIsForecastDialogOpen(details.open);
-          if (!details.open) {
-            setSelectedForecastDay(null);
-          }
-        }}
-      >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent maxW="3xl">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedForecastDay
-                  ? `Forecast Details • ${formatDayLabel(selectedForecastDay.valid_date)}`
-                  : 'Forecast Details'}
-              </DialogTitle>
-              {selectedForecastDay ? (
-                <Text fontSize="sm" color="gray.600" mt={1}>
-                  {selectedForecastDay.valid_date} • {selectedForecastDay.weather.description}
-                </Text>
-              ) : null}
-              <DialogCloseTrigger />
-            </DialogHeader>
-            <DialogBody pb={6}>
-              {selectedForecastDay ? (
-                <SimpleGrid columns={{ base: 1, sm: 2 }} gap={4}>
-                  {selectedDayMetrics.map((metric) => (
-                    <MetricCard
-                      key={metric.label}
-                      label={metric.label}
-                      value={metric.value}
-                      subtext={metric.subtext}
-                    />
-                  ))}
-                </SimpleGrid>
-              ) : (
-                <Text color="gray.600">No forecast day selected.</Text>
-              )}
-            </DialogBody>
-          </DialogContent>
-        </DialogPositioner>
-      </DialogRoot>
-
-      <DialogRoot
-        open={isHistoryDialogOpen}
-        onOpenChange={(details) => {
-          setIsHistoryDialogOpen(details.open);
-          if (!details.open) {
-            setSelectedHistoryDay(null);
-          }
-        }}
-      >
-        <DialogBackdrop />
-        <DialogPositioner>
-          <DialogContent maxW="3xl">
-            <DialogHeader>
-              <DialogTitle>
-                {selectedHistoryDay
-                  ? `History Details • ${formatDayLabel(selectedHistoryDay.datetime)}`
-                  : 'History Details'}
-              </DialogTitle>
-              {selectedHistoryDay ? (
-                <Text fontSize="sm" color="gray.600" mt={1}>
-                  {selectedHistoryDay.datetime} • Revision {selectedHistoryDay.revision_status ?? 'N/A'}
-                </Text>
-              ) : null}
-              <DialogCloseTrigger />
-            </DialogHeader>
-            <DialogBody pb={6}>
-              {selectedHistoryDay ? (
-                <SimpleGrid columns={{ base: 1, sm: 2 }} gap={4}>
-                  {selectedHistoryMetrics.map((metric) => (
-                    <MetricCard
-                      key={metric.label}
-                      label={metric.label}
-                      value={metric.value}
-                      subtext={metric.subtext}
-                    />
-                  ))}
-                </SimpleGrid>
-              ) : (
-                <Text color="gray.600">No history day selected.</Text>
-              )}
-            </DialogBody>
-          </DialogContent>
-        </DialogPositioner>
-      </DialogRoot>
 
       <Footer />
     </Flex>

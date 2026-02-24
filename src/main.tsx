@@ -9,28 +9,31 @@ import { ProtectedRoute } from './routes/ProtectedRoute.tsx'
 import NotFound from './pages/notFound.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import CurrentWeather from './pages/currentWeather.tsx'
+import { AppStateProvider } from './state/app-state.tsx'
 
 const queryClient = new QueryClient();
   
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Provider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<App />} />
-            
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/currentWeather" element={<CurrentWeather />} />
-              <Route path="/alerts" element={<Alerts />} />
-            </Route>
+      <AppStateProvider>
+        <Provider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<App />} />
+              
+              {/* Protected Routes */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/currentWeather" element={<CurrentWeather />} />
+                <Route path="/alerts" element={<Alerts />} />
+              </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </Provider>
+      </AppStateProvider>
     </QueryClientProvider>
   </StrictMode>,
 )
