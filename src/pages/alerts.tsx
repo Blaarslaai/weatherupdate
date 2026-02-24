@@ -4,18 +4,18 @@ import { Flex, Container, Box, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudSun } from '@fortawesome/free-solid-svg-icons';
-import { getCurrentWeather } from '@/lib/http';
+import { getWeatherAlerts } from '@/lib/http';
 
-function Forecast() {
+function Alerts() {
   useEffect(() => {
-      getCurrentWeather('Pretoria', 'ZA')
-        .then((data: any) => {
-          console.log('Current weather data:', data);
-        })
-        .catch((error: any) => {
-          console.error('Error fetching current weather data:', error);
-        });
-    }, []);
+    getWeatherAlerts('Pretoria', 'ZA')
+      .then((data: any) => {
+        console.log('Weather alerts data:', data);
+      })
+      .catch((error: any) => {
+        console.error('Error fetching weather alerts data:', error);
+      });
+  }, []);
 
   return (
     <Flex direction="column" minH="100vh" bg="gray.50">
@@ -50,4 +50,4 @@ function Forecast() {
   );
 }
 
-export default Forecast;
+export default Alerts;

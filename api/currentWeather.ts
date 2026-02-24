@@ -4,8 +4,8 @@ import process from 'process';
 const WEATHERBIT_BASE = "https://api.weatherbit.io/v2.0";
 
 function pickQuery(req: VercelRequest) {
-  const city = typeof req.query.city === "string" ? req.body.city : undefined;
-  const country = typeof req.query.country === "string" ? req.body.country : undefined;
+  const city = typeof req.body.city === "string" ? req.body.city : undefined;
+  const country = typeof req.body.country === "string" ? req.body.country : undefined;
 
   return { city, country };
 }
@@ -20,7 +20,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const hasCountry = !!country;
 
   if (!hasCity && hasCountry) {
-    return res.status(400).json({ error: "Provide lat+lon or city" });
+    return res.status(400).json({ error: "Provide a city and country" });
   }
 
   const url = new URL(`${WEATHERBIT_BASE}/current`);
