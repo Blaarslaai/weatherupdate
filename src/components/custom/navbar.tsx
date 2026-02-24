@@ -61,8 +61,8 @@ function Navbar() {
                 <Link href="/" color="gray.700" fontWeight="medium">
                   Home
                 </Link>
-                <Link href="/forecast" color="gray.700" fontWeight="medium">
-                  Forecast
+                <Link href="/currentWeather" color="gray.700" fontWeight="medium">
+                  Current Weather
                 </Link>
                 <Link href="/alerts" color="gray.700" fontWeight="medium">
                   Alerts
@@ -87,9 +87,9 @@ function Navbar() {
                           Home
                         </Link>
                       </MenuItem>
-                      <MenuItem value="forecast">
-                        <Link href="/forecast" color="gray.700" fontWeight="medium">
-                          Forecast
+                      <MenuItem value="currentWeather">
+                        <Link href="/currentWeather" color="gray.700" fontWeight="medium">
+                          Current Weather
                         </Link>
                       </MenuItem>
                       <MenuItem value="alerts">
