@@ -5,6 +5,7 @@ import type { DailyForecastResponse } from '@/schemas/dailyForecastSchemas';
 import type { DailyHistoryResponse } from '@/schemas/dailyHistorySchemas';
 import type { CurrentWeatherPageCache } from '@/components/custom/current-weather/types';
 import { currentWeatherPageCacheKey } from '@/components/custom/current-weather/utils';
+import { toaster } from '@/components/ui/toaster';
 
 type Args = {
   city: string;
@@ -91,6 +92,18 @@ export function useCurrentWeatherPageData({ city, country }: Args) {
             // Ignore cache write failures.
           }
         }
+
+        toaster.create({
+          title: `Weather data loaded successfully`,
+          type: "success",
+        });
+      })
+      .catch((error) => {
+        toaster.create({
+          title: `Failed to load weather data`,
+          description: (error as Error).message,
+          type: "error",
+        });
       })
       .finally(() => {
         setIsRefreshing(false);

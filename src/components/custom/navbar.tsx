@@ -21,6 +21,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { LuMenu } from 'react-icons/lu';
 import { useSession } from '@/hooks/useSession';
 import { loginRequest, logoutRequest } from '@/services/auth';
+import { toaster } from "@/components/ui/toaster"
 
 function Navbar() {
   const { data, isLoading, refetch } = useSession();
@@ -33,6 +34,17 @@ function Navbar() {
       await loginRequest(import.meta.env.VITE_AUTH_TOKEN!);
       await queryClient.invalidateQueries({ queryKey: ['session'] });
       await refetch();
+
+      toaster.create({
+          title: `Logged in successfully`,
+          type: "success",
+      });
+    } catch (error) {
+      toaster.create({
+          title: `Login failed`,
+          description: (error as Error).message,
+          type: "error",
+      });   
     } finally {
       setIsAuthSubmitting(false);
     }
@@ -44,6 +56,17 @@ function Navbar() {
       await logoutRequest();
       await queryClient.invalidateQueries({ queryKey: ['session'] });
       await refetch();
+
+      toaster.create({
+          title: `Logged out successfully`,
+          type: "success",
+      });
+    } catch (error) {
+      toaster.create({
+          title: `Logout failed`,
+          description: (error as Error).message,
+          type: "error",
+      });   
     } finally {
       setIsAuthSubmitting(false);
     }
@@ -123,9 +146,6 @@ function Navbar() {
                 <Link href="/settings" color="gray.700" fontWeight="medium">
                   Settings
                 </Link>
-                <Link href="/settings" color="gray.700" fontWeight="medium">
-                  Settings
-                </Link>
               </HStack>
 
               <Box display={{ base: 'block', md: 'none' }}>
@@ -164,11 +184,6 @@ function Navbar() {
                       <MenuItem value="alerts">
                         <Link href="/alerts" color="gray.700" fontWeight="medium">
                           Weather Alerts
-                        </Link>
-                      </MenuItem>
-                      <MenuItem value="settings">
-                        <Link href="/settings" color="gray.700" fontWeight="medium">
-                          Settings
                         </Link>
                       </MenuItem>
                       <MenuItem value="settings">

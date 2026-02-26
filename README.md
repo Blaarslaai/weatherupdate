@@ -21,8 +21,6 @@ The app currently supports:
 - TypeScript
 - Chakra UI 3
 - React Router
-- DaisyUI
-- Tailwindcss
 
 ### Backend (API Routes)
 - Vercel-style serverless route handlers in `api/`
@@ -180,7 +178,7 @@ npm run test:api
 
 This project was designed to be simple and straight-forward to use. I made use of ChakraUI
 and custom components made with tailwindcss and DaisyUI for streamlined development and fast
-iteration.
+iteration. - Scratch tailwindcss and DaisyUI, these two libraries conflicted...
 
 I grouped all navigation into logical containers, i.e. home is separate, settings is separate,
 and then all weather related pages are grouped in a menu.

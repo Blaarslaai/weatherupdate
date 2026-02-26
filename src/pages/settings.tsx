@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react'
 import { useAppState } from '../state/app-state'
 import { useSession } from '../hooks/useSession'
 import CloudBackground from '@/components/custom/cloudBackground'
+import { toaster } from '@/components/ui/toaster'
 
 function Settings() {
   const { location, setLocation } = useAppState()
@@ -42,6 +43,11 @@ function Settings() {
 
     setLocation({ city: nextCity, country: nextCountry })
     setError(null)
+
+    toaster.create({
+        title: `Location updated`,
+        type: "info",
+    });
 
     setIsLoading(false)
   }

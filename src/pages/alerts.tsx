@@ -17,6 +17,7 @@ import { getWeatherAlerts } from '@/lib/http';
 import type { WeatherAlertsResponse } from '@/schemas/weatherAlertSchemas';
 import { useAppState } from '@/state/app-state';
 import CloudBackground from '@/components/custom/cloudBackground';
+import { toaster } from '@/components/ui/toaster';
 
 type AlertsPageCache = {
   alerts: WeatherAlertsResponse | null;
@@ -47,9 +48,19 @@ function Alerts() {
         } catch {
           // Ignore cache write failures.
         }
+
+        toaster.create({
+          title: `Weather alert data loaded successfully`,
+          type: "success",
+        });
       })
       .catch((err: unknown) => {
-        console.error('Error fetching weather alerts data:', err);
+        toaster.create({
+          title: `Failed to load weather data`,
+          description: (err as Error).message,
+          type: "error",
+        });
+
         setError(err instanceof Error ? err.message : 'Failed to load weather alerts.');
       })
       .finally(() => {

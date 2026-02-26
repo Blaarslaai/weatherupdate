@@ -50,7 +50,7 @@ function CurrentWeather() {
 
         <Flex direction="column" gap={6}>
           <LocationBanner location={location} />
-§
+
           <SnapshotHeaderCard
             view={activeHeader}
             selectedSnapshot={selectedSnapshot}
