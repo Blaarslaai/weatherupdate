@@ -16,6 +16,13 @@ function Footer() {
             style={{ height: '2.5rem', width: 'auto' }}
           />
           <Text fontWeight="semibold">Weather Update</Text>
+          <Flex
+            direction={{ base: 'column', md: 'row' }}
+            align={{ base: 'end', md: 'center' }}
+            ml={{ base: 0, md: "auto" }}
+          >
+            <Text fontSize="sm">Copyright © {new Date().getFullYear()} - All right reserved</Text>
+          </Flex>
         </Flex>
       </Container>
     </Box>
