@@ -8,8 +8,6 @@ import { buildActiveSnapshotView } from '@/components/custom/current-weather/met
 import { LocationBanner } from '@/components/custom/current-weather/LocationBanner';
 import { SnapshotHeaderCard } from '@/components/custom/current-weather/SnapshotHeaderCard';
 import { MetricGrid } from '@/components/custom/current-weather/MetricGrid';
-import { ForecastSection } from '@/components/custom/current-weather/ForecastSection';
-import { HistorySection } from '@/components/custom/current-weather/HistorySection';
 import { useCurrentWeatherPageData } from '@/hooks/useCurrentWeatherPageData';
 
 function CurrentWeather() {
@@ -21,8 +19,6 @@ function CurrentWeather() {
     dailyForecast,
     dailyHistory,
     error,
-    forecastError,
-    historyError,
     isRefreshing,
     loadWeatherData,
   } = useCurrentWeatherPageData({
@@ -35,8 +31,6 @@ function CurrentWeather() {
   }, [location.city, location.country]);
 
   const weather = currentWeather?.data?.[0];
-  const forecastDays = dailyForecast?.data?.slice(0, 3) ?? [];
-  const historyDays = (dailyHistory?.data ?? []).slice(0, 3);
 
   const activeHeader = buildActiveSnapshotView({
     selection: selectedSnapshot,
@@ -95,20 +89,6 @@ function CurrentWeather() {
           ) : null}
 
           <MetricGrid metrics={activeHeader.metrics} />
-
-          <ForecastSection
-            dailyForecast={dailyForecast}
-            forecastError={forecastError}
-            days={forecastDays}
-            onSelect={setSelectedSnapshot}
-          />
-
-          <HistorySection
-            dailyHistory={dailyHistory}
-            historyError={historyError}
-            days={historyDays}
-            onSelect={setSelectedSnapshot}
-          />
         </Flex>
       </Container>
 

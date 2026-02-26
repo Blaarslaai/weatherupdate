@@ -10,6 +10,9 @@ import NotFound from './pages/notFound.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import CurrentWeather from './pages/currentWeather.tsx'
 import { AppStateProvider } from './state/app-state.tsx'
+import Settings from './pages/settings.tsx'
+import WeatherForecast from './pages/weatherForecast.tsx'
+import WeatherHistory from './pages/weatherHistory.tsx'
 
 const queryClient = new QueryClient();
   
@@ -25,8 +28,11 @@ createRoot(document.getElementById('root')!).render(
               
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
+                <Route path="/weatherForecast" element={<WeatherForecast />} />
+                <Route path="/weatherHistory" element={<WeatherHistory />} />
                 <Route path="/currentWeather" element={<CurrentWeather />} />
                 <Route path="/alerts" element={<Alerts />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

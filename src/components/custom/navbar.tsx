@@ -7,11 +7,13 @@ import {
   HStack,
   IconButton,
   Link,
+  Menu,
   MenuContent,
   MenuItem,
   MenuPositioner,
   MenuRoot,
   MenuTrigger,
+  Portal,
   Spacer,
 } from '@chakra-ui/react';
 import { useState } from 'react';
@@ -79,11 +81,47 @@ function Navbar() {
                 <Link href="/" color="gray.700" fontWeight="medium">
                   Home
                 </Link>
-                <Link href="/currentWeather" color="gray.700" fontWeight="medium">
-                  Current Weather
-                </Link>
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <Button
+                      variant="ghost"
+                      bg="transparent"
+                      _hover={{
+                        bg: "transparent",
+                        textDecoration: "underline",
+                        textDecorationColor: "gray.200",
+                      }}
+                      _active={{
+                        bg: "transparent",
+                      }}
+                      _focus={{
+                        boxShadow: "none",
+                      }}
+                    >
+                      Weather
+                    </Button>
+                  </Menu.Trigger>
+                  <Portal>
+                    <Menu.Positioner>
+                      <Menu.Content>
+                        <Menu.Item value="currentWeather">
+                          <Link href="/currentWeather" flex="1">Current Weather</Link>
+                        </Menu.Item>
+                        <Menu.Item value="weatherForecast">
+                          <Link href="/weatherForecast" flex="1">Weather Forecast</Link>
+                        </Menu.Item>
+                        <Menu.Item value="weatherHistory">
+                          <Link href="/weatherHistory" flex="1">Weather History</Link>
+                        </Menu.Item>
+                      </Menu.Content>
+                    </Menu.Positioner>
+                  </Portal>
+                </Menu.Root>
                 <Link href="/alerts" color="gray.700" fontWeight="medium">
                   Alerts
+                </Link>
+                <Link href="/settings" color="gray.700" fontWeight="medium">
+                  Settings
                 </Link>
               </HStack>
 
@@ -110,9 +148,24 @@ function Navbar() {
                           Current Weather
                         </Link>
                       </MenuItem>
+                      <MenuItem value="weatherForecast">
+                        <Link href="/weatherForecast" color="gray.700" fontWeight="medium">
+                          Weather Forecast
+                        </Link>
+                      </MenuItem>
+                      <MenuItem value="weatherHistory">
+                        <Link href="/weatherHistory" color="gray.700" fontWeight="medium">
+                          Weather History
+                        </Link>
+                      </MenuItem>
                       <MenuItem value="alerts">
                         <Link href="/alerts" color="gray.700" fontWeight="medium">
                           Alerts
+                        </Link>
+                      </MenuItem>
+                      <MenuItem value="settings">
+                        <Link href="/settings" color="gray.700" fontWeight="medium">
+                          Settings
                         </Link>
                       </MenuItem>
                     </MenuContent>

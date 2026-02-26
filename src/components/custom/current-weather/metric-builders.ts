@@ -21,9 +21,8 @@ export function buildCurrentMetrics(weather?: CurrentObservation | null): Metric
     {
       label: 'Wind',
       value: `${weather.wind_spd.toFixed(1)} m/s`,
-      subtext: `${weather.wind_cdir_full} (${weather.wind_dir}°)${
-        weather.gust ? ` • Gust ${weather.gust.toFixed(1)} m/s` : ''
-      }`,
+      subtext: `${weather.wind_cdir_full} (${weather.wind_dir}°)${weather.gust ? ` • Gust ${weather.gust.toFixed(1)} m/s` : ''
+        }`,
     },
     {
       label: 'Solar Radiation',
@@ -83,9 +82,8 @@ export function buildForecastMetrics(day?: DailyForecastDay | null): MetricItem[
     {
       label: 'Wind',
       value: `${day.wind_spd.toFixed(1)} m/s`,
-      subtext: `${day.wind_cdir_full} (${day.wind_dir}°)${
-        day.wind_gust_spd != null ? ` • Gust ${day.wind_gust_spd.toFixed(1)} m/s` : ''
-      }`,
+      subtext: `${day.wind_cdir_full} (${day.wind_dir}°)${day.wind_gust_spd != null ? ` • Gust ${day.wind_gust_spd.toFixed(1)} m/s` : ''
+        }`,
     },
     {
       label: 'Humidity',
@@ -179,11 +177,6 @@ export function buildHistoryMetrics(day?: DailyHistoryDay | null): MetricItem[] 
       value: `UV ${day.max_uv ?? 'N/A'}`,
       subtext: `tDHI ${day.t_dhi ?? 'N/A'}`,
     },
-    {
-      label: 'Revision',
-      value: day.revision_status ?? 'N/A',
-      subtext: day.revision_version != null ? `Version ${day.revision_version}` : undefined,
-    },
   ];
 }
 
@@ -218,7 +211,7 @@ export function buildActiveSnapshotView({
     return {
       title: `History Snapshot • ${formatDayLabel(day.datetime)}`,
       subtitle: `${dailyHistory?.city_name ?? location.city}${dailyHistory?.state_code ? `, ${dailyHistory.state_code}` : ''} • ${dailyHistory?.country_code ?? location.country}`,
-      meta: `${day.datetime} • Revision ${day.revision_status ?? 'N/A'}`,
+      meta: `${day.datetime}`,
       badge: 'Historical',
       metrics: buildHistoryMetrics(day),
     };
