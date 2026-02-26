@@ -21,7 +21,8 @@ The app currently supports:
 - TypeScript
 - Chakra UI 3
 - React Router
-- TanStack React Query
+- DaisyUI
+- Tailwindcss
 
 ### Backend (API Routes)
 - Vercel-style serverless route handlers in `api/`
@@ -175,22 +176,6 @@ Run:
 npm run test:api
 ```
 
-## Production Readiness Notes
-
-Already implemented:
-- Modular current weather page components and data hook
-- Shared app state for location selection
-- Server-side secret handling for weather/auth
-- API route test coverage (Jest)
-- Client-side cache-first UX with explicit refresh controls
-
-Recommended next steps:
-- Add CI pipeline to run `npm run test:api` + `npm run build`
-- Add stricter API route method guards (`405`) consistently to all weather routes
-- Add rate limiting / abuse protection to auth and weather endpoints
-- Add error telemetry/logging
-- Add integration tests for client page flows
-
 ## Design Decisions
 
 This project was designed to be simple and straight-forward to use. I made use of ChakraUI
@@ -200,12 +185,18 @@ iteration.
 I grouped all navigation into logical containers, i.e. home is separate, settings is separate,
 and then all weather related pages are grouped in a menu.
 
+Lastly, I decided to use Vercel to host my api's as server functions. The reasoning behind this
+was to incorporate my authentication into the routes so they wouldn't be accessible without the
+correct signature.
+
 ## Trade-Offs
 
 The trade-offs that were made were mostly surrounding the login and authentication, and
 using another api or external service to populate the city and country options instead
-of typing those details manually. These decisions were simply based on the fact that there
-is no backend available to properly implement authentication and that I wanted to minimize
-my usage of server-side functions, as this is a front-end test. Also, I couldn't find a
-free api service to use that could give me a list of countries with their codes and then
-populate their cities based on that mentioned country selection.
+of typing those details manually.
+
+These decisions were simply based on the fact that there is no backend available to properly
+implement authentication and that I wanted to minimize my usage of server-side functions,
+as this is a front-end test. Also, I couldn't find a free api service to use that could give
+me a list of countries with their codes and then populate their cities based on that mentioned
+country selection.
