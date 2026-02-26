@@ -14,15 +14,12 @@ export function LocationBanner({ location }: LocationBannerProps) {
       border="1px solid"
       borderColor="gray.200"
     >
-      <HStack gap={3} flexWrap="wrap">
-        <Badge colorPalette="blue" variant="subtle" px={3} py={1} rounded="full">
-          Homepage Selection
-        </Badge>
+      <HStack gap={2} flexWrap="wrap">
         <Badge colorPalette="green" variant="subtle" px={3} py={1} rounded="full">
           Active: {location.city}, {location.country}
         </Badge>
         <Text fontSize="sm" color="gray.500">
-          Update city/country on the home page.
+          Update city/country on the settings page.
         </Text>
       </HStack>
     </Box>

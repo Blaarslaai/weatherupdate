@@ -13,7 +13,7 @@ export type CurrentObservation = CurrentWeatherResponse['data'][number];
 export type SnapshotSelection =
   | { kind: 'current' }
   | { kind: 'forecast'; day: DailyForecastDay }
-  | { kind: 'history'; day: DailyHistoryDay };
+  | { kind: 'history'; day: DailyHistoryDay }
 
 export type CurrentWeatherPageCache = {
   currentWeather: CurrentWeatherResponse | null;

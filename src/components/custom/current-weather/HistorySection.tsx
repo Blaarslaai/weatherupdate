@@ -7,10 +7,17 @@ type HistorySectionProps = {
   dailyHistory: DailyHistoryResponse | null;
   historyError: string | null;
   days: DailyHistoryDay[];
+  selectedSnapshot?: SnapshotSelection;
   onSelect: (snapshot: SnapshotSelection) => void;
 };
 
-export function HistorySection({ dailyHistory, historyError, days, onSelect }: HistorySectionProps) {
+export function HistorySection({
+  dailyHistory,
+  historyError,
+  days,
+  selectedSnapshot,
+  onSelect,
+}: HistorySectionProps) {
   return (
     <Box
       bg="white"
@@ -57,17 +64,22 @@ export function HistorySection({ dailyHistory, historyError, days, onSelect }: H
 
       {days.length > 0 ? (
         <SimpleGrid columns={{ base: 1, md: 3 }} gap={4}>
-          {days.map((day) => (
-            <Button
+          {days.map((day) => {
+            const isActive =
+              selectedSnapshot?.kind === 'history' &&
+              selectedSnapshot.day.datetime === day.datetime;
+
+            return (
+              <Button
               key={day.datetime}
               variant="outline"
               h="auto"
               p={0}
               textAlign="left"
-              borderColor="gray.200"
-              bg="gray.50"
+              borderColor={isActive ? 'blue.200' : 'gray.200'}
+              bg={isActive ? 'blue.100' : 'gray.50'}
               _hover={{ bg: 'blue.50', borderColor: 'blue.200' }}
-              _active={{ bg: 'blue.100' }}
+              _active={{ bg: 'blue.100', borderColor: 'blue.200' }}
               onClick={() => onSelect({ kind: 'history', day })}
             >
               <VStack align="stretch" w="full" p={4} gap={2}>
@@ -93,7 +105,8 @@ export function HistorySection({ dailyHistory, historyError, days, onSelect }: H
                 </Text>
               </VStack>
             </Button>
-          ))}
+            );
+          })}
         </SimpleGrid>
       ) : null}
     </Box>
