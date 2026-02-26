@@ -108,18 +108,18 @@ function Navbar() {
                           <Link href="/currentWeather" flex="1">Current Weather</Link>
                         </Menu.Item>
                         <Menu.Item value="weatherForecast">
-                          <Link href="/weatherForecast" flex="1">Weather Forecast</Link>
+                          <Link href="/weatherForecast" flex="1">3-Day Weather Forecast</Link>
                         </Menu.Item>
                         <Menu.Item value="weatherHistory">
-                          <Link href="/weatherHistory" flex="1">Weather History</Link>
+                          <Link href="/weatherHistory" flex="1">3-Day Weather History</Link>
+                        </Menu.Item>
+                        <Menu.Item value="alerts">
+                          <Link href="/alerts" flex="1">Weather Alerts</Link>
                         </Menu.Item>
                       </Menu.Content>
                     </Menu.Positioner>
                   </Portal>
                 </Menu.Root>
-                <Link href="/alerts" color="gray.700" fontWeight="medium">
-                  Alerts
-                </Link>
                 <Link href="/settings" color="gray.700" fontWeight="medium">
                   Settings
                 </Link>
@@ -150,17 +150,17 @@ function Navbar() {
                       </MenuItem>
                       <MenuItem value="weatherForecast">
                         <Link href="/weatherForecast" color="gray.700" fontWeight="medium">
-                          Weather Forecast
+                          3-Day Weather Forecast
                         </Link>
                       </MenuItem>
                       <MenuItem value="weatherHistory">
                         <Link href="/weatherHistory" color="gray.700" fontWeight="medium">
-                          Weather History
+                          3-Day Weather History
                         </Link>
                       </MenuItem>
                       <MenuItem value="alerts">
                         <Link href="/alerts" color="gray.700" fontWeight="medium">
-                          Alerts
+                          Weather Alerts
                         </Link>
                       </MenuItem>
                       <MenuItem value="settings">

@@ -3,13 +3,16 @@ import Navbar from '@/components/custom/navbar';
 import { Flex, Container, Box, Text } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCloudSun } from '@fortawesome/free-solid-svg-icons';
+import CloudBackground from '@/components/custom/cloudBackground';
 
 function NotFound() {
   return (
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+  
         <Flex direction="column" align="center" justify="center" gap={6}>
           <Box
             bg="white"
@@ -21,6 +24,7 @@ function NotFound() {
             textAlign="center"
             w="full"
             maxW="2xl"
+            zIndex={10}
           >
             <Text fontSize="3xl" fontWeight="bold" color="gray.800">
               Welcome

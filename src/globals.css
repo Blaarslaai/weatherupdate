@@ -1,2 +1,43 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+@keyframes cloud-drift-slow {
+  from { transform: translateX(-4%); }
+  to { transform: translateX(4%); }
+}
+
+@keyframes cloud-drift-mid {
+  from { transform: translateX(6%); }
+  to { transform: translateX(-6%); }
+}
+
+@keyframes cloud-drift-fast {
+  from { transform: translateX(-10%); }
+  to { transform: translateX(10%); }
+}
+
+.clouds-bg .cloud-layer {
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.clouds-bg .cloud-layer--slow {
+  animation: cloud-drift-slow 28s linear infinite alternate;
+}
+
+.clouds-bg .cloud-layer--mid {
+  animation: cloud-drift-mid 18s linear infinite alternate;
+}
+
+.clouds-bg .cloud-layer--fast {
+  animation: cloud-drift-fast 12s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clouds-bg .cloud-layer--slow,
+  .clouds-bg .cloud-layer--mid,
+  .clouds-bg .cloud-layer--fast {
+    animation: none;
+  }
+}

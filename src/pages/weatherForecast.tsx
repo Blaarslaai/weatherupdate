@@ -9,6 +9,7 @@ import { LocationBanner } from '@/components/custom/current-weather/LocationBann
 import { MetricGrid } from '@/components/custom/current-weather/MetricGrid';
 import { ForecastSection } from '@/components/custom/current-weather/ForecastSection';
 import { useCurrentWeatherPageData } from '@/hooks/useCurrentWeatherPageData';
+import CloudBackground from '@/components/custom/cloudBackground';
 
 function WeatherForecast() {
   const { location } = useAppState();
@@ -43,7 +44,9 @@ function WeatherForecast() {
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+
         <Flex direction="column" gap={6}>
           <LocationBanner location={location} />
 

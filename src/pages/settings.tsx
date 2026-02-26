@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useAppState } from '../state/app-state'
 import { useSession } from '../hooks/useSession'
+import CloudBackground from '@/components/custom/cloudBackground'
 
 function Settings() {
   const { location, setLocation } = useAppState()
@@ -49,7 +50,9 @@ function Settings() {
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+  
         <Flex direction="column" align="center" justify="center" gap={6}>
           <Box
             bg="white"
@@ -61,6 +64,7 @@ function Settings() {
             textAlign="center"
             w="full"
             maxW="2xl"
+            zIndex={10}
           >
             {data?.authenticated &&
               <Box mt={6} textAlign="left">

@@ -9,6 +9,7 @@ import { LocationBanner } from '@/components/custom/current-weather/LocationBann
 import { SnapshotHeaderCard } from '@/components/custom/current-weather/SnapshotHeaderCard';
 import { MetricGrid } from '@/components/custom/current-weather/MetricGrid';
 import { useCurrentWeatherPageData } from '@/hooks/useCurrentWeatherPageData';
+import CloudBackground from '@/components/custom/cloudBackground';
 
 function CurrentWeather() {
   const { location } = useAppState();
@@ -44,10 +45,12 @@ function CurrentWeather() {
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+
         <Flex direction="column" gap={6}>
           <LocationBanner location={location} />
-
+§
           <SnapshotHeaderCard
             view={activeHeader}
             selectedSnapshot={selectedSnapshot}
