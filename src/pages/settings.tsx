@@ -1,6 +1,5 @@
 import Footer from '../components/custom/footer'
 import Navbar from '../components/custom/navbar'
-import logo from '/wu-logo.png'
 import {
   Box,
   Button,

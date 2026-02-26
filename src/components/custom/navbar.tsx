@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { LuClipboardPaste, LuCopy, LuMenu, LuScissors } from 'react-icons/lu';
+import { LuMenu } from 'react-icons/lu';
 import { useSession } from '@/hooks/useSession';
 import { loginRequest, logoutRequest } from '@/services/auth';
 
