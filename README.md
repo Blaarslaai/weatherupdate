@@ -104,6 +104,9 @@ Pages load from cache first and only fetch network data if cache is missing, unl
 ### Protected (requires login)
 - `/currentWeather`
 - `/alerts`
+- `/weatherForecast`
+- `/weatherHistory`
+- `/settings`
 
 ## Environment Variables
 
@@ -187,3 +190,22 @@ Recommended next steps:
 - Add rate limiting / abuse protection to auth and weather endpoints
 - Add error telemetry/logging
 - Add integration tests for client page flows
+
+## Design Decisions
+
+This project was designed to be simple and straight-forward to use. I made use of ChakraUI
+and custom components made with tailwindcss and DaisyUI for streamlined development and fast
+iteration.
+
+I grouped all navigation into logical containers, i.e. home is separate, settings is separate,
+and then all weather related pages are grouped in a menu.
+
+## Trade-Offs
+
+The trade-offs that were made were mostly surrounding the login and authentication, and
+using another api or external service to populate the city and country options instead
+of typing those details manually. These decisions were simply based on the fact that there
+is no backend available to properly implement authentication and that I wanted to minimize
+my usage of server-side functions, as this is a front-end test. Also, I couldn't find a
+free api service to use that could give me a list of countries with their codes and then
+populate their cities based on that mentioned country selection.
