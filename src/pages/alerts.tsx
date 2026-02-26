@@ -99,7 +99,7 @@ function Alerts() {
   const alerts = alertsData?.alerts ?? [];
 
   return (
-    <Flex direction="column" minH="100vh" bg="gray.50">
+    <Flex direction="column" minH="100vh" bg="blue.50">
       <Navbar />
 
       <Container as="main" py={12} flex="1">

@@ -124,6 +124,10 @@ Important:
 
 ## Local Setup
 
+### .env.local (required file content for local environment variables)
+- `VITE_API_BASE=/api`
+- `VITE_AUTH_TOKEN=ThisIsAToken`
+
 ### Requirements
 - Node.js 20+ (project is working on Node 22)
 - npm

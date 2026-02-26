@@ -80,7 +80,7 @@ function Navbar() {
         borderColor="gray.200"
         position="sticky"
         top={0}
-        zIndex={10}
+        zIndex={50}
         boxShadow="sm"
       >
       <Container maxW="6xl">
@@ -148,7 +148,9 @@ function Navbar() {
                 </Link>
               </HStack>
 
-              <Box display={{ base: 'block', md: 'none' }}>
+              <Box
+                display={{ base: 'block', md: 'none' }}
+              >
                 <MenuRoot positioning={{ placement: 'bottom-end' }}>
                   <MenuTrigger asChild>
                     <IconButton
