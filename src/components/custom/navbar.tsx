@@ -123,6 +123,9 @@ function Navbar() {
                 <Link href="/settings" color="gray.700" fontWeight="medium">
                   Settings
                 </Link>
+                <Link href="/settings" color="gray.700" fontWeight="medium">
+                  Settings
+                </Link>
               </HStack>
 
               <Box display={{ base: 'block', md: 'none' }}>
@@ -161,6 +164,11 @@ function Navbar() {
                       <MenuItem value="alerts">
                         <Link href="/alerts" color="gray.700" fontWeight="medium">
                           Weather Alerts
+                        </Link>
+                      </MenuItem>
+                      <MenuItem value="settings">
+                        <Link href="/settings" color="gray.700" fontWeight="medium">
+                          Settings
                         </Link>
                       </MenuItem>
                       <MenuItem value="settings">
