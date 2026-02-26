@@ -13,6 +13,7 @@ export function LocationBanner({ location }: LocationBannerProps) {
       boxShadow="sm"
       border="1px solid"
       borderColor="gray.200"
+      zIndex={10}
     >
       <HStack gap={2} flexWrap="wrap">
         <Badge colorPalette="green" variant="subtle" px={3} py={1} rounded="full">

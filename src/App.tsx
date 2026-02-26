@@ -1,3 +1,4 @@
+import CloudBackground from './components/custom/cloudBackground'
 import Footer from './components/custom/footer'
 import Navbar from './components/custom/navbar'
 import logo from '/wu-logo.png'
@@ -13,7 +14,9 @@ function App() {
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+
         <Flex direction="column" align="center" justify="center" gap={6}>
           <Box
             bg="white"
@@ -25,7 +28,12 @@ function App() {
             textAlign="center"
             w="full"
             maxW="2xl"
-          >
+            position="relative"
+            overflow="hidden"
+            zIndex={10}
+          > 
+            <Box position="absolute" inset={0} bgGradient="linear(to-b, blue.50, white)" opacity={0.35} />
+            <Box position="relative">
             <img
               src={logo}
               alt="Logo"
@@ -38,6 +46,7 @@ function App() {
             <Text mt={2} color="gray.600">
               Your weather dashboard starts here.
             </Text>
+            </Box>
           </Box>
         </Flex>
       </Container>

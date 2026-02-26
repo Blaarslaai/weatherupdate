@@ -26,6 +26,7 @@ export function ForecastSection({
       boxShadow="md"
       border="1px solid"
       borderColor="gray.200"
+      zIndex={10}
     >
       <HStack justify="space-between" align="center" flexWrap="wrap" gap={3} mb={4}>
         <Box>

@@ -10,6 +10,7 @@ export function MetricCard({ label, value, subtext }: MetricItem) {
       border="1px solid"
       borderColor="gray.200"
       boxShadow="sm"
+      zIndex={10}
     >
       <Text fontSize="sm" color="gray.500" mb={1}>
         {label}

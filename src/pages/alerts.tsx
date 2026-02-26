@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { getWeatherAlerts } from '@/lib/http';
 import type { WeatherAlertsResponse } from '@/schemas/weatherAlertSchemas';
 import { useAppState } from '@/state/app-state';
+import CloudBackground from '@/components/custom/cloudBackground';
 
 type AlertsPageCache = {
   alerts: WeatherAlertsResponse | null;
@@ -90,7 +91,9 @@ function Alerts() {
     <Flex direction="column" minH="100vh" bg="gray.50">
       <Navbar />
 
-      <Container as="main" maxW="6xl" py={12} flex="1">
+      <Container as="main" py={12} flex="1">
+      <CloudBackground />
+
         <Flex direction="column" gap={6}>
           <Box
             bg="white"
@@ -99,6 +102,7 @@ function Alerts() {
             boxShadow="sm"
             border="1px solid"
             borderColor="gray.200"
+            zIndex={10}
           >
             <HStack gap={3} flexWrap="wrap">
               <Badge colorPalette="blue" variant="subtle" px={3} py={1} rounded="full">
@@ -120,6 +124,7 @@ function Alerts() {
             boxShadow="md"
             border="1px solid"
             borderColor="gray.200"
+            zIndex={10}
           >
             <HStack justify="space-between" align="start" flexWrap="wrap" gap={4}>
               <Box>
@@ -200,6 +205,7 @@ function Alerts() {
               boxShadow="sm"
               border="1px solid"
               borderColor="gray.200"
+              zIndex={10}
             >
               <Text fontWeight="semibold" color="gray.800">
                 No active alerts

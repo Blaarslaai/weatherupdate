@@ -24,6 +24,7 @@ export function SnapshotHeaderCard({
       boxShadow="md"
       border="1px solid"
       borderColor="gray.200"
+      zIndex={10}
     >
       <HStack justify="space-between" align="start" flexWrap="wrap" gap={4}>
         <Box>
