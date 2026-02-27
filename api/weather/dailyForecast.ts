@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import process from 'process';
-import { requireSession } from '../auth/auth';
+import { requireSession } from '../auth/auth.js';
 
 const WEATHERBIT_BASE = "https://api.weatherbit.io/v2.0";
 

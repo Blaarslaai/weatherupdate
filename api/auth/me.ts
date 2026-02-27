@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { requireSession } from "./auth";
+import { requireSession } from "./auth.js";
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
   const session = requireSession(req);
