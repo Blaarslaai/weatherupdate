@@ -2,10 +2,7 @@ import { currentWeatherResponseSchema } from '@/schemas/currentWeatherSchemas';
 import { dailyForecastResponseSchema } from '@/schemas/dailyForecastSchemas';
 import { dailyHistoryResponseSchema } from '@/schemas/dailyHistorySchemas';
 import { weatherAlertsResponseSchema } from '../schemas/weatherAlertSchemas';
-
-type CurrentWeatherRequestOptions = {
-  forceRefresh?: boolean;
-};
+import type { CurrentWeatherRequestOptions } from './types';
 
 export function getCurrentWeather(
   city: string,

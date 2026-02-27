@@ -1,14 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-
-type AppLocation = {
-  city: string;
-  country: string;
-};
-
-type AppStateContextValue = {
-  location: AppLocation;
-  setLocation: (next: AppLocation) => void;
-};
+import type { AppLocation, AppStateContextValue } from './state-types';
 
 const DEFAULT_LOCATION: AppLocation = {
   city: 'Pretoria',

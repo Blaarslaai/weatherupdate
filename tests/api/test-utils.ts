@@ -1,12 +1,6 @@
 import jwt from 'jsonwebtoken';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-type MockReqOptions = {
-  method?: string;
-  body?: any;
-  query?: Record<string, any>;
-  headers?: Record<string, string>;
-};
+import { MockReqOptions } from './types';
 
 export function createMockReq(options: MockReqOptions = {}): VercelRequest {
   return {

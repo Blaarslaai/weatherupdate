@@ -6,11 +6,7 @@ import type { DailyHistoryResponse } from '@/schemas/dailyHistorySchemas';
 import type { CurrentWeatherPageCache } from '@/components/custom/current-weather/types';
 import { currentWeatherPageCacheKey } from '@/components/custom/current-weather/utils';
 import { toaster } from '@/components/ui/toaster';
-
-type Args = {
-  city: string;
-  country: string;
-};
+import type { Args } from './types';
 
 export function useCurrentWeatherPageData({ city, country }: Args) {
   const [currentWeather, setCurrentWeather] = useState<CurrentWeatherResponse | null>(null);

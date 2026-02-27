@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "test": "jest --runInBand",
     "test:api": "jest --runInBand tests/api",
+    "test:frontend": "jest --runInBand tests/frontend",
     "lint": "eslint .",
     "preview": "vite preview",
     "vercel": "vercel dev"
