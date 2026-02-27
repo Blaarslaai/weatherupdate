@@ -163,8 +163,11 @@ Then open the local URL shown by Vercel.
 - `npm run lint` - Run ESLint
 - `npm run test` - Run all Jest tests
 - `npm run test:api` - Run API route Jest tests only
+- `npm run test:frontend` - Run frontend Jest tests only
 
 ## Testing
+
+### API Routes
 
 API route tests are implemented first and live in `tests/api/`.
 
@@ -176,6 +179,19 @@ Run:
 
 ```bash
 npm run test:api
+```
+
+### Frontend
+
+Frontend tests are implemented second and live in `tests/frontend/`.
+
+Current coverage includes:
+- Weather metrics and page formatting
+
+Run:
+
+```bash
+npm run test:frontend
 ```
 
 ## Design Decisions
